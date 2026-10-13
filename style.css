@@ -2,6 +2,8 @@
   color-scheme: light dark;
   /* Site palette. */
   --palette: #8B8880 #C0BEB6 #E3DDCD #2F3331 #F6E84A;
+  /* Mosaic tile colors (read by mosaic.js). */
+  --mosaic-palette: #48B1D4 #4D9065 #F6E84A #E79609 #C44E29;
 
   --bg: #C0BEB6;
   --surface: #E3DDCD;
@@ -209,6 +211,34 @@ a:hover {
 
 .panel .empty {
   color: var(--muted);
+}
+
+/* A panel with a mosaic behind its content (drawn by mosaic.js).
+   Its content sits on the tile grid: mosaic.js sets --tile (tile pitch),
+   --grout (gap between tiles), --offset-y (grid's vertical offset) and each
+   card's height, so card edges fall in the grout instead of cutting tiles. */
+.mosaic {
+  position: relative;
+  overflow: hidden;
+  padding: calc(var(--tile, 28px) + var(--grout, 3px) / 2);
+}
+
+.mosaic .cards {
+  gap: calc(var(--tile, 28px) + var(--grout, 3px));
+  transform: translateY(var(--offset-y, 0px));
+}
+
+.mosaic > * {
+  position: relative;
+}
+
+.mosaic canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--border);
 }
 
 /* Keep in sync with the breakpoint in tabs.js. */
