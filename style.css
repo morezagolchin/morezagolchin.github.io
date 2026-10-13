@@ -1,18 +1,22 @@
 :root {
   color-scheme: light dark;
-  --bg: #f6f3ee;
-  --surface: #fffdf9;
-  --border: #e4ddd2;
+  /* Site palette. */
+  --palette: #8B8880 #C0BEB6 #E3DDCD #2F3331 #F6E84A;
+
+  --bg: #C0BEB6;
+  --surface: #E3DDCD;
+  --border: rgb(139 136 128 / 0.45); /* #8B8880 */
   /* Border around the panels and tab bars. */
   --section-border: 5px solid var(--border);
-  --text: #24211d;
-  --muted: #6f675d;
+  --text: #2F3331;
+  /* #2F3331 and #8B8880 mixed: #8B8880 alone is too faint for text on #E3DDCD. */
+  --muted: #5D5E59;
   /* Links, focus rings and hovered cards. */
-  --link: #8a5a2b;
-  /* Fill behind the selected tab, and the text on it. */
-  --accent: #8a5a2b;
-  --on-accent: #fffdf9;
-  --dna: rgb(138 90 43 / 0.14);
+  --link: #2F3331;
+  /* Fills only (selected tab): too light for text on light backgrounds. */
+  --accent: #F6E84A;
+  --on-accent: #2F3331;
+  --dna: rgb(139 136 128 / 0.35);
 
   /* Spacing between the panels and the window edges. */
   --gap: clamp(1.25rem, 2vw, 1.75rem);
@@ -23,15 +27,13 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #1b1815;
-    --surface: #24201c;
-    --border: #3a332b;
-    --text: #ece6dc;
-    --muted: #a99f92;
-    --link: #d9a066;
-    --accent: #d9a066;
-    --on-accent: #1b1815;
-    --dna: rgb(217 160 102 / 0.09);
+    --bg: #2F3331;
+    --surface: #383C39; /* #2F3331 lifted slightly toward #8B8880 */
+    --border: rgb(139 136 128 / 0.3);
+    --text: #E3DDCD;
+    --muted: #C0BEB6;
+    --link: #F6E84A;
+    --dna: rgb(139 136 128 / 0.16);
   }
 }
 
