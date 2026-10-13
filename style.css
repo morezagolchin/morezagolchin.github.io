@@ -1,0 +1,185 @@
+:root {
+  color-scheme: light dark;
+  --bg: #f6f3ee;
+  --surface: #fffdf9;
+  --border: #e4ddd2;
+  --text: #24211d;
+  --muted: #6f675d;
+  --accent: #8a5a2b;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1b1815;
+    --surface: #24201c;
+    --border: #3a332b;
+    --text: #ece6dc;
+    --muted: #a99f92;
+    --accent: #d9a066;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 1.0625rem/1.6 system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+.page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: clamp(2.5rem, 10vh, 5rem) 1.25rem 2.5rem;
+}
+
+main {
+  flex: 1;
+}
+
+a {
+  color: var(--accent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+
+a:hover {
+  text-decoration-thickness: 2px;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* Header */
+
+h1 {
+  margin: 0 0 0.75rem;
+  font-size: clamp(1.9rem, 4vw + 1rem, 2.6rem);
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+}
+
+.intro {
+  margin: 0;
+  max-width: 34rem;
+  color: var(--muted);
+  font-size: 1.125rem;
+}
+
+/* Projects */
+
+section {
+  margin-top: 3.5rem;
+}
+
+h2 {
+  margin: 0 0 1rem;
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.cards {
+  display: grid;
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.card {
+  position: relative;
+  padding: 1.25rem 1.375rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.card h3 {
+  margin: 0 0 0.3rem;
+  font-size: 1.125rem;
+  line-height: 1.3;
+}
+
+.card h3 a {
+  color: var(--text);
+  text-decoration: none;
+}
+
+/* Stretch the title link over the whole card so the card is clickable. */
+.card h3 a::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+
+.card:hover {
+  border-color: var(--accent);
+}
+
+.card:hover h3 a {
+  color: var(--accent);
+}
+
+.card h3 a:focus-visible {
+  outline: none;
+}
+
+.card h3 a:focus-visible::after {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.card p {
+  margin: 0;
+  color: var(--muted);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .card,
+  .card h3 a {
+    transition: border-color 0.15s ease, color 0.15s ease;
+  }
+}
+
+/* Footer */
+
+footer {
+  margin-top: 4rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border);
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.links a {
+  display: inline-block;
+  padding-block: 0.35rem;
+}
