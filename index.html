@@ -11,42 +11,71 @@
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%238a5a2b'/%3E%3Ctext x='16' y='23' font-family='system-ui,sans-serif' font-size='19' font-weight='700' text-anchor='middle' fill='%23f6f3ee'%3EM%3C/text%3E%3C/svg%3E">
   <link rel="stylesheet" href="style.css">
   <script src="dna.js" defer></script>
+  <script src="tabs.js" defer></script>
 </head>
 <body>
   <div class="dna-bg" aria-hidden="true"></div>
-  <div class="page">
-    <header>
-      <h1>Mohammadreza Golchin</h1>
-      <p class="intro">Biology Student at Leopold-Franzens-University of Innsbruck. Interested in Bioinformatics, Molecular Biology, Biotechnology.</p>
-    </header>
+  <!--
+    Wide screens: About me / Contacts tabs on the left, Projects / Playground on the right.
+    Narrow screens: one column with all four as tabs (see tabs.js).
+  -->
+  <main class="panels">
+    <div class="tabs tabs-side" role="tablist" aria-label="Sections">
+      <button class="tab" type="button" role="tab" id="tab-about" aria-controls="about" aria-selected="true">About me</button>
+      <button class="tab" type="button" role="tab" id="tab-contacts" aria-controls="contacts" aria-selected="false" tabindex="-1">Contacts</button>
+    </div>
+    <div class="tabs tabs-main" role="tablist" aria-label="Work">
+      <button class="tab" type="button" role="tab" id="tab-projects" aria-controls="projects" aria-selected="true">Projects</button>
+      <button class="tab" type="button" role="tab" id="tab-playground" aria-controls="playground" aria-selected="false" tabindex="-1">Playground</button>
+    </div>
 
-    <main>
-      <section aria-labelledby="projects">
-        <h2 id="projects">Projects</h2>
-        <!--
-          To add a project, copy this block into the list below:
+    <section class="panel panel-side" id="about" role="tabpanel" aria-labelledby="tab-about">
+      <!-- Placeholder text: replace with your own. -->
+      <p>I'm a biology student at Leopold-Franzens-University of Innsbruck, interested in bioinformatics, molecular biology and biotechnology.</p>
+      <p>Alongside my studies I build small web projects, which you can find under Playground.</p>
+    </section>
 
-          <li class="card">
-            <h3><a href="/project-name/">Project name</a></h3>
-            <p>One or two sentences about it.</p>
-          </li>
-        -->
-        <ul class="cards">
-          <li class="card">
-            <h3><a href="/chessooly/">chessooly</a></h3>
-            <p>A small, privacy-friendly chess site: play a friend online, odd game modes, and training games.</p>
-          </li>
-        </ul>
-      </section>
-    </main>
-
-    <footer>
-      <ul class="links">
-        <li><a href="https://github.com/morezagolchin" rel="me">GitHub</a></li>
-        <li><a href="https://linkedin.com/in/mohammadreza-golchin-70401327a" rel="me">LinkedIn</a></li>
-        <li><a href="mailto:moreza.golchin@gmail.com">moreza.golchin@gmail.com</a></li>
+    <section class="panel panel-side" id="contacts" role="tabpanel" aria-labelledby="tab-contacts" hidden>
+      <ul class="contacts">
+        <li>
+          <span class="contact-label">Email</span>
+          <a href="mailto:moreza.golchin@gmail.com">moreza.golchin@gmail.com</a>
+        </li>
+        <li>
+          <span class="contact-label">GitHub</span>
+          <a href="https://github.com/morezagolchin" rel="me">morezagolchin</a>
+        </li>
+        <li>
+          <span class="contact-label">LinkedIn</span>
+          <a href="https://linkedin.com/in/mohammadreza-golchin-70401327a" rel="me">mohammadreza-golchin</a>
+        </li>
       </ul>
-    </footer>
-  </div>
+    </section>
+
+    <section class="panel panel-main" id="projects" role="tabpanel" aria-labelledby="tab-projects">
+      <!--
+        To add projects, replace the paragraph below with a card list like the
+        one in Playground: <ul class="cards"> with one <li class="card"> each.
+      -->
+      <p class="empty">Nothing here yet.</p>
+    </section>
+
+    <section class="panel panel-main" id="playground" role="tabpanel" aria-labelledby="tab-playground" hidden>
+      <!--
+        To add something, copy this block into the list below:
+
+        <li class="card">
+          <h3><a href="/project-name/">Project name</a></h3>
+          <p>One or two sentences about it.</p>
+        </li>
+      -->
+      <ul class="cards">
+        <li class="card">
+          <h3><a href="/chessooly/">chessooly</a></h3>
+          <p>A small, privacy-friendly chess site: play a friend online, odd game modes, and training games.</p>
+        </li>
+      </ul>
+    </section>
+  </main>
 </body>
 </html>

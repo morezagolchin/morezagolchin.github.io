@@ -3,10 +3,22 @@
   --bg: #f6f3ee;
   --surface: #fffdf9;
   --border: #e4ddd2;
+  /* Border around the panels and tab bars. */
+  --section-border: 5px solid var(--border);
   --text: #24211d;
   --muted: #6f675d;
+  /* Links, focus rings and hovered cards. */
+  --link: #8a5a2b;
+  /* Fill behind the selected tab, and the text on it. */
   --accent: #8a5a2b;
+  --on-accent: #fffdf9;
   --dna: rgb(138 90 43 / 0.14);
+
+  /* Spacing between the panels and the window edges. */
+  --gap: clamp(1.25rem, 2vw, 1.75rem);
+  /* Padding inside the panels. */
+  --pad: clamp(1.25rem, 2.5vw, 1.75rem);
+  --radius: 8px;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -16,7 +28,9 @@
     --border: #3a332b;
     --text: #ece6dc;
     --muted: #a99f92;
+    --link: #d9a066;
     --accent: #d9a066;
+    --on-accent: #1b1815;
     --dna: rgb(217 160 102 / 0.09);
   }
 }
@@ -33,10 +47,30 @@ html {
 }
 
 body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
   margin: 0;
   background: var(--bg);
   color: var(--text);
   font: 1.0625rem/1.6 system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+a {
+  color: var(--link);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+
+a:hover {
+  text-decoration-thickness: 2px;
+}
+
+:focus-visible {
+  outline: 2px solid var(--link);
+  outline-offset: 3px;
+  border-radius: 2px;
 }
 
 /* DNA background: fixed to the viewport, so the page scrolls over it.
@@ -55,68 +89,171 @@ body {
   pointer-events: none;
 }
 
-.page {
+/* Panels: one column on narrow screens; on wide screens a narrow left column
+   (About me / Contacts) and a wide right one (Projects / Playground), --gap apart.
+   Each column is a tab bar box above a body box, half a --gap apart;
+   tabs.js shows one body per column. */
+.panels {
   position: relative;
   z-index: 1;
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  min-height: 100dvh;
-  max-width: 40rem;
-  margin: 0 auto;
-  padding: clamp(2.5rem, 10vh, 5rem) 1.25rem 2.5rem;
-}
-
-main {
+  display: grid;
   flex: 1;
+  /* Tab bars, then the panels filling the rest of the screen height. */
+  grid-template-rows: auto 1fr;
+  row-gap: calc(var(--gap) / 2);
+  /* Padding rather than margin, so this box reaches the screen edges: panels
+     slide out to the edge when switching tabs, and get clipped there without
+     adding a scrollbar. */
+  padding: var(--gap);
+  overflow: hidden;
+  overflow: clip;
 }
 
-a {
-  color: var(--accent);
-  text-decoration-thickness: 1px;
-  text-underline-offset: 0.2em;
+.tabs-side {
+  grid-area: 1 / 1;
 }
 
-a:hover {
-  text-decoration-thickness: 2px;
+/* Tabs wrap onto a second row when they don't fit (e.g. four tabs on a phone). */
+.tabs {
+  --inset: 0.3rem;
+  --tab-radius: calc(var(--radius) - var(--inset));
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  padding: var(--inset);
+  background: var(--surface);
+  border: var(--section-border);
+  border-radius: var(--radius);
 }
 
-:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 3px;
-  border-radius: 2px;
+/* Highlight behind the selected tab. tabs.js sets its position and size,
+   and turns on the slide (data-animate) once it's in place. */
+.tabs::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--iw, 0);
+  height: var(--ih, 0);
+  transform: translate(var(--ix, 0), var(--iy, 0));
+  background: var(--accent);
+  border-radius: var(--tab-radius);
 }
 
-/* Header */
-
-h1 {
-  margin: 0 0 0.75rem;
-  font-size: clamp(1.9rem, 4vw + 1rem, 2.6rem);
-  line-height: 1.15;
-  letter-spacing: -0.015em;
+@media (prefers-reduced-motion: no-preference) {
+  .tabs[data-animate]::before {
+    transition: transform 0.25s ease, width 0.25s ease, height 0.25s ease;
+  }
 }
 
-.intro {
+.tabs-main {
+  display: none;
+}
+
+.tab {
+  position: relative;
+  flex-shrink: 0;
   margin: 0;
-  max-width: 34rem;
+  padding: 0.55rem 0.9rem;
+  background: none;
+  border: 0;
+  border-radius: var(--tab-radius);
   color: var(--muted);
-  font-size: 1.125rem;
+  font: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.4;
+  white-space: nowrap;
+  cursor: pointer;
 }
 
-/* Projects */
-
-section {
-  margin-top: 3.5rem;
+.tab:hover {
+  color: var(--text);
 }
 
-h2 {
-  margin: 0 0 1rem;
+.tab[aria-selected="true"] {
+  color: var(--on-accent);
+}
+
+.tab:focus-visible {
+  outline-offset: 1px;
+}
+
+/* All panels in a column share one grid cell, so the old and new panel can
+   overlap while sliding (see tabs.js). */
+.panel {
+  grid-area: 2 / 1;
+  padding: var(--pad);
+  background: var(--surface);
+  border: var(--section-border);
+  border-radius: var(--radius);
+}
+
+/* Before tabs.js runs, narrow screens show only the first panel. */
+@media not all and (min-width: 48rem) {
+  .panels:not([data-ready]) .panel-main {
+    display: none;
+  }
+}
+
+.panel p {
+  margin: 0 0 1em;
+}
+
+.panel p:last-child {
+  margin-bottom: 0;
+}
+
+.panel .empty {
+  color: var(--muted);
+}
+
+/* Keep in sync with the breakpoint in tabs.js. */
+@media (min-width: 48rem) {
+  .panels {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+    column-gap: var(--gap);
+  }
+
+  .tabs-main { grid-area: 1 / 2; display: flex; }
+  .panel-main { grid-area: 2 / 2; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .tab {
+    transition: color 0.15s ease;
+  }
+}
+
+/* Contacts */
+
+.contacts {
+  display: grid;
+  gap: 1.1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.contacts li {
+  display: grid;
+  gap: 0.1rem;
+}
+
+.contact-label {
   color: var(--muted);
   font-size: 0.8rem;
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
+
+.contacts a {
+  overflow-wrap: anywhere;
+}
+
+/* Projects */
 
 .cards {
   display: grid;
@@ -131,7 +268,7 @@ h2 {
   padding: 1.25rem 1.375rem;
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: 6px;
 }
 
 .card h3 {
@@ -154,11 +291,13 @@ h2 {
 }
 
 .card:hover {
-  border-color: var(--accent);
+  border-color: var(--link);
 }
 
 .card:hover h3 a {
-  color: var(--accent);
+  color: var(--link);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
 }
 
 .card h3 a:focus-visible {
@@ -166,7 +305,7 @@ h2 {
 }
 
 .card h3 a:focus-visible::after {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--link);
   outline-offset: 3px;
 }
 
@@ -180,26 +319,4 @@ h2 {
   .card h3 a {
     transition: border-color 0.15s ease, color 0.15s ease;
   }
-}
-
-/* Footer */
-
-footer {
-  margin-top: 4rem;
-  padding-top: 1.25rem;
-  border-top: 1px solid var(--border);
-}
-
-.links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.25rem 1.5rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.links a {
-  display: inline-block;
-  padding-block: 0.35rem;
 }
