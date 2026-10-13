@@ -6,6 +6,7 @@
   --text: #24211d;
   --muted: #6f675d;
   --accent: #8a5a2b;
+  --dna: rgb(138 90 43 / 0.14);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -16,6 +17,7 @@
     --text: #ece6dc;
     --muted: #a99f92;
     --accent: #d9a066;
+    --dna: rgb(217 160 102 / 0.09);
   }
 }
 
@@ -37,7 +39,25 @@ body {
   font: 1.0625rem/1.6 system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
+/* DNA background: fixed to the viewport, so the page scrolls over it.
+   Filled by dna.js. */
+.dna-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  padding: 0.25rem 0.5rem;
+  color: var(--dna);
+  font: 500 0.875rem/1.6 ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  letter-spacing: 0.3em;
+  word-break: break-all;
+  user-select: none;
+  pointer-events: none;
+}
+
 .page {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
