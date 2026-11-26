@@ -15,6 +15,7 @@
   const REACH = 150;     // how far around the pointer tiles round off, in CSS pixels
   const MORPH_IN = 150;  // how fast tiles turn into circles (ms; lower is faster)
   const MORPH_OUT = 600; // how fast they turn back once the pointer moves on
+  const BORDER = 1.5;     // tile border width in CSS pixels (color: --mosaic-border in style.css)
   const SHRINK = 0.10;   // how much smaller a full circle is than its square (0.25 = 25%)
   // How much each tile differs from the others, so they don't move in step.
   // 0 = all alike; 1 = anywhere from none to twice the base value.
@@ -186,6 +187,10 @@
       const { w, h, cols, rows, pitch, offsetY } = grid;
       const size = pitch - GAP;
       const now = performance.now();
+      // Read each time, so it follows a light/dark mode switch.
+      const border = getComputedStyle(canvas).getPropertyValue("--mosaic-border").trim();
+      ctx.strokeStyle = border;
+      ctx.lineWidth = BORDER;
       // Rows slide in from, or out to, the right edge or the left one.
       const fromRight = flight && (flight.phase === "in") === (flight.move < 0);
       const end = flight && (flight.phase === "in" ? vanishStart() + VANISH_TIME : flight.start + flight.duration);
@@ -218,6 +223,13 @@
           ctx.beginPath();
           ctx.roundRect(x + dx + inset, y + inset, s, s, (round * s) / 2);
           ctx.fill();
+          // The border sits just inside the tile's edge, so tiles keep their size.
+          if (border && s > BORDER * 2) {
+            const b = BORDER / 2;
+            ctx.beginPath();
+            ctx.roundRect(x + dx + inset + b, y + inset + b, s - BORDER, s - BORDER, Math.max(0, (round * s) / 2 - b));
+            ctx.stroke();
+          }
         }
       }
       // Once landed, the tiles are home for good. After flying out they stay

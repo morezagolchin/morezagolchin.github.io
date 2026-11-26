@@ -3,11 +3,16 @@
   /* Site palette (Coolors): Bright Gold, Steel Blue, Fern, Oxidized Iron, Graphite. */
   --palette: #F9D939 #6499B9 #53783F #B02607 #333138;
   /* Mosaic tile colors (read by mosaic.js). */
-  --mosaic-palette: #48B1D4 #4D9065 #F6E84A #E79609 #C44E29;
+  /*--mosaic-palette: #48B1D4 #4D9065 #F6E84A #E79609 #C44E29; */
+  --mosaic-palette: #F9D939 #75a9c8 #569a31 #d4320e #e2861c;
+  /* Border around each mosaic tile (read by mosaic.js). */
+  --mosaic-border: #333138;
 
   /* The palette has no light colour, so the light backgrounds are Graphite tints. */
   --bg: #E7E6E7; /* 12% Graphite on white */
   --surface: #F7F7F7; /* 4% Graphite on white */
+  /* The panels and tab bars over the DNA background: --surface, 35% transparent. */
+  --box: color-mix(in srgb, var(--surface) 65%, transparent);
   --border: rgb(51 49 56 / 0.45); /* #333138 */
   /* Border around the panels and tab bars. */
   --section-border: 2px solid var(--border);
@@ -127,7 +132,7 @@ a:hover {
   flex-wrap: wrap;
   gap: 0.25rem;
   padding: var(--inset);
-  background: var(--surface);
+  background: var(--box);
   border: var(--section-border);
   border-radius: var(--radius);
 }
@@ -193,7 +198,7 @@ a:hover {
 .panel {
   grid-area: 2 / 1;
   padding: var(--pad);
-  background: var(--surface);
+  background: var(--box);
   border: var(--section-border);
   border-radius: var(--radius);
 }
