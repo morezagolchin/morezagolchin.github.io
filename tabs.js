@@ -72,7 +72,8 @@
   function stopSlides(scope) {
     for (const tab of scope) {
       const panel = panelOf(tab);
-      for (const animation of panel.getAnimations()) animation.cancel();
+      for (const animation of panel.getAnimations({ subtree: true })) animation.cancel();
+      panel.dispatchEvent(new CustomEvent("panelslide", { detail: { phase: "stop" } }));
       leaving.delete(panel);
     }
   }
@@ -91,45 +92,50 @@
 
   // Pan the old panel out and the new one in, in the direction the highlight
   // moves: a tab further along the bar comes in from the right.
+  // Both panels must be visible (render() has run), so they can be measured.
   function slide(fromTab, toTab) {
     const from = panelOf(fromTab);
     const to = panelOf(toTab);
     const order = tabsIn(toTab.parentElement);
     const dir = order.indexOf(toTab) > order.indexOf(fromTab) ? 1 : -1;
-
-    // Both panels share one grid cell, so they have the same box at rest.
-    const box = from.getBoundingClientRect();
     const view = slideWindow(toTab);
-    const roomLeft = box.left - view.left;
-    const roomRight = view.right - box.right;
 
-    const move = (x) => `translateX(${x}px)`;
-    // Clip a panel moved by x to the window, so it disappears at the screen
-    // or neighbour's edge rather than at its own.
-    const clip = (x) => `inset(0px ${x - roomRight}px 0px ${-roomLeft - x}px)`;
-    // Far enough to be completely outside the window.
-    const outX = dir > 0 ? -(box.width + roomLeft) : box.width + roomRight;
-    const inX = dir > 0 ? box.width + roomRight : -(box.width + roomLeft);
-
-    leaving.add(from);
-    from.animate(
-      [
+    // Pan one element out of the window, or into it.
+    function pan(el, out, timing) {
+      const box = el.getBoundingClientRect();
+      const roomLeft = box.left - view.left;
+      const roomRight = view.right - box.right;
+      const move = (x) => `translateX(${x}px)`;
+      // Clip an element moved by x to the window, so it disappears at the
+      // screen or neighbour's edge rather than at its own.
+      const clip = (x) => `inset(0px ${x - roomRight}px 0px ${-roomLeft - x}px)`;
+      // Far enough to be completely outside the window, on the side it leaves
+      // towards or comes in from.
+      const away = (dir > 0) === out ? -(box.width + roomLeft) : box.width + roomRight;
+      const frames = [
         { transform: move(0), clipPath: clip(0) },
-        { transform: move(outX), clipPath: clip(outX) },
-      ],
-      SLIDE_OUT,
-    ).onfinish = () => {
+        { transform: move(away), clipPath: clip(away) },
+      ];
+      return el.animate(out ? frames : frames.reverse(), timing);
+    }
+
+    // A mosaic panel stays put and animates its tiles and cards itself
+    // (mosaic.js), told by a "panelslide" event. A stand-in animation of the
+    // panel times the slide, so it finishes and gets cancelled like the others.
+    function slidePanel(panel, out, timing) {
+      if (!panel.classList.contains("mosaic")) return pan(panel, out, timing);
+      panel.dispatchEvent(new CustomEvent("panelslide", {
+        detail: { phase: out ? "out" : "in", move: -dir, delay: timing.delay || 0, duration: timing.duration },
+      }));
+      return panel.animate([{ opacity: 1 }, { opacity: 1 }], timing);
+    }
+
+    slidePanel(from, true, SLIDE_OUT).onfinish = () => {
       leaving.delete(from);
       render();
     };
-    to.animate(
-      [
-        { transform: move(inX), clipPath: clip(inX) },
-        { transform: move(0), clipPath: clip(0) },
-      ],
-      // Wait (fully clipped, so invisible) until the old panel has left.
-      { ...SLIDE_IN, delay: SLIDE_OUT.duration, fill: "backwards" },
-    );
+    // Wait (fully clipped, so invisible) until the old panel has left.
+    slidePanel(to, false, { ...SLIDE_IN, delay: SLIDE_OUT.duration, fill: "backwards" });
   }
 
   function layout() {
@@ -146,10 +152,12 @@
     if (previous === tab) return;
     // On wide screens only this tab's column is affected.
     stopSlides(wide.matches ? tabs.filter((t) => columnOf(t) === columnOf(tab)) : tabs);
-    if (previous && previous !== tab && !reducedMotion.matches) slide(previous, tab);
+    const animate = previous && !reducedMotion.matches;
+    if (animate) leaving.add(panelOf(previous));
     selected[columnOf(tab)] = tab;
     current = tab;
     render();
+    if (animate) slide(previous, tab);
     placeHighlights();
   }
 

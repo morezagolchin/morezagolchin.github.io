@@ -1,24 +1,25 @@
 :root {
   color-scheme: light dark;
-  /* Site palette. */
-  --palette: #8B8880 #C0BEB6 #E3DDCD #2F3331 #F6E84A;
+  /* Site palette (Coolors): Bright Gold, Steel Blue, Fern, Oxidized Iron, Graphite. */
+  --palette: #F9D939 #6499B9 #53783F #B02607 #333138;
   /* Mosaic tile colors (read by mosaic.js). */
   --mosaic-palette: #48B1D4 #4D9065 #F6E84A #E79609 #C44E29;
 
-  --bg: #C0BEB6;
-  --surface: #E3DDCD;
-  --border: rgb(139 136 128 / 0.45); /* #8B8880 */
+  /* The palette has no light colour, so the light backgrounds are Graphite tints. */
+  --bg: #E7E6E7; /* 12% Graphite on white */
+  --surface: #F7F7F7; /* 4% Graphite on white */
+  --border: rgb(51 49 56 / 0.45); /* #333138 */
   /* Border around the panels and tab bars. */
-  --section-border: 5px solid var(--border);
-  --text: #2F3331;
-  /* #2F3331 and #8B8880 mixed: #8B8880 alone is too faint for text on #E3DDCD. */
-  --muted: #5D5E59;
-  /* Links, focus rings and hovered cards. */
-  --link: #2F3331;
+  --section-border: 2px solid var(--border);
+  --text: #333138;
+  /* 75% Graphite on white. */
+  --muted: #66646A;
+  /* Links, focus rings and hovered cards: Oxidized Iron. */
+  --link: #B02607;
   /* Fills only (selected tab): too light for text on light backgrounds. */
-  --accent: #F6E84A;
-  --on-accent: #2F3331;
-  --dna: rgb(139 136 128 / 0.35);
+  --accent: #F9D939;
+  --on-accent: #333138;
+  --dna: rgb(100 153 185 / 0.35); /* #6499B9 */
 
   /* Spacing between the panels and the window edges. */
   --gap: clamp(1.25rem, 2vw, 1.75rem);
@@ -29,13 +30,13 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #2F3331;
-    --surface: #383C39; /* #2F3331 lifted slightly toward #8B8880 */
-    --border: rgb(139 136 128 / 0.3);
-    --text: #E3DDCD;
-    --muted: #C0BEB6;
-    --link: #F6E84A;
-    --dna: rgb(139 136 128 / 0.16);
+    --bg: #333138;
+    --surface: #3D3B42; /* #333138 lifted 5% toward white */
+    --border: rgb(247 247 247 / 0.14);
+    --text: #E7E6E7;
+    --muted: #ADADAF;
+    --link: #F9D939;
+    --dna: rgb(100 153 185 / 0.16);
   }
 }
 
@@ -142,6 +143,7 @@ a:hover {
   height: var(--ih, 0);
   transform: translate(var(--ix, 0), var(--iy, 0));
   background: var(--accent);
+  border: 2px solid var(--on-accent);
   border-radius: var(--tab-radius);
 }
 
@@ -180,8 +182,10 @@ a:hover {
   color: var(--on-accent);
 }
 
+/* No focus ring: arrow keys select the tab they move to,
+   so the highlight already marks the focused tab. */
 .tab:focus-visible {
-  outline-offset: 1px;
+  outline: none;
 }
 
 /* All panels in a column share one grid cell, so the old and new panel can
@@ -216,10 +220,14 @@ a:hover {
 /* A panel with a mosaic behind its content (drawn by mosaic.js).
    Its content sits on the tile grid: mosaic.js sets --tile (tile pitch),
    --grout (gap between tiles), --offset-y (grid's vertical offset) and each
-   card's height, so card edges fall in the grout instead of cutting tiles. */
+   card's height, so card edges fall in the grout instead of cutting tiles.
+   No box around it, and the grout shows the page through, so the tiles float. */
 .mosaic {
   position: relative;
   overflow: hidden;
+  background: none;
+  border: 0;
+  border-radius: 0;
   padding: calc(var(--tile, 28px) + var(--grout, 3px) / 2);
 }
 
@@ -238,7 +246,6 @@ a:hover {
   display: block;
   width: 100%;
   height: 100%;
-  background: var(--border);
 }
 
 /* Keep in sync with the breakpoint in tabs.js. */
