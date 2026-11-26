@@ -11,6 +11,15 @@
 - [ ] Add a favicon.
 - [ ] Give the page a title and meta description with my name and field.
 
+## Shared look for project pages
+Make pages under morezagolchin.github.io/<project>/ (e.g. the Playground projects) match this site, from one place.
+- [ ] Split style.css: `theme.css` for the shared look (colour variables for light and dark mode, fonts, spacing, radius, borders, base styles for text, links, buttons and cards); `style.css` keeps only the home page's own parts (tabs, DNA background, mosaic).
+- [ ] Link `<link rel="stylesheet" href="/theme.css">` from every project page, and use the theme variables (`var(--text)`, `var(--surface)`, `var(--border)`, ...) instead of fixed colours.
+- [ ] Optional: a shared header, `/site-header.js` defining a `<site-header>` tag with my name and a link back home.
+- [ ] List the theme's variable names in the README: values can change, but renaming or removing one breaks the projects that use it.
+- [ ] Add a checklist for new projects: link `/theme.css`, add `<site-header>`, use only theme colours.
+- [ ] Check how chessooly and arcazooly are built, and update each one to use the theme.
+
 ## Checks
 - [ ] Contrast: check the text stays readable over the DNA background and see-through boxes, in light and dark mode.
 - [ ] Test on a real phone, especially tab switching and the Playground animation.
