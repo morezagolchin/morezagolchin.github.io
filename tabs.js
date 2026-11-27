@@ -2,6 +2,8 @@
 // About me / Contacts on the left, Projects / Playground on the right.
 // On narrow screens the columns merge: the right column's tabs move into the
 // left tab bar and only one panel is shown.
+// The yellow tile over the selected tab is moved by ui-tabs.js, which follows
+// the aria-selected changes made here.
 (() => {
   // Keep in sync with the breakpoint in style.css.
   const wide = matchMedia("(min-width: 48rem)");
@@ -11,10 +13,12 @@
   const SLIDE_IN = { duration: 450, easing: "cubic-bezier(0.65, 0, 0.35, 1)" }; // ease-in-out
 
   const panels = document.querySelector(".panels");
-  const sideList = document.querySelector(".tabs-side");
-  const mainList = document.querySelector(".tabs-main");
+  // Each tab bar (a box) holds a tab list (the .ui-tabs track).
+  const sideBar = document.querySelector(".tabs-side");
+  const mainBar = document.querySelector(".tabs-main");
+  const sideList = sideBar?.querySelector(".ui-tabs");
+  const mainList = mainBar?.querySelector(".ui-tabs");
   if (!panels || !sideList || !mainList) return;
-  const lists = [sideList, mainList];
 
   const tabsIn = (list) => [...list.querySelectorAll('[role="tab"]')];
   const sideTabs = tabsIn(sideList);
@@ -45,29 +49,6 @@
     }
   }
 
-  // Move each tab bar's highlight (.tabs::before) under its selected tab.
-  // It slides there if the bar has data-animate.
-  function placeHighlights() {
-    for (const list of lists) {
-      const tab = tabsIn(list).find(isSelected);
-      if (!tab) continue;
-      list.style.setProperty("--ix", tab.offsetLeft + "px");
-      list.style.setProperty("--iy", tab.offsetTop + "px");
-      list.style.setProperty("--iw", tab.offsetWidth + "px");
-      list.style.setProperty("--ih", tab.offsetHeight + "px");
-    }
-  }
-
-  // Jump without sliding: used on first load, resize and layout changes.
-  function placeHighlightsInstantly() {
-    for (const list of lists) list.removeAttribute("data-animate");
-    placeHighlights();
-    for (const list of lists) {
-      list.offsetWidth; // apply the new position before turning the slide back on
-      list.setAttribute("data-animate", "");
-    }
-  }
-
   // Finish any panel slides in progress right away.
   function stopSlides(scope) {
     for (const tab of scope) {
@@ -84,8 +65,8 @@
     let left = 0;
     let right = document.documentElement.clientWidth;
     if (wide.matches) {
-      if (columnOf(tab) === "side") right = mainList.getBoundingClientRect().left;
-      else left = sideList.getBoundingClientRect().right;
+      if (columnOf(tab) === "side") right = mainBar.getBoundingClientRect().left;
+      else left = sideBar.getBoundingClientRect().right;
     }
     return { left, right };
   }
@@ -143,7 +124,6 @@
     const target = wide.matches ? mainList : sideList;
     if (mainTabs[0].parentElement !== target) target.append(...mainTabs);
     render();
-    placeHighlightsInstantly();
     panels.setAttribute("data-ready", "");
   }
 
@@ -158,7 +138,6 @@
     current = tab;
     render();
     if (animate) slide(previous, tab);
-    placeHighlights();
   }
 
   for (const tab of tabs) {
@@ -180,8 +159,5 @@
   }
 
   wide.addEventListener("change", layout);
-  // Tabs can move or change size (window resize, tabs wrapping, fonts loading).
-  const resizes = new ResizeObserver(placeHighlightsInstantly);
-  for (const el of [...lists, ...tabs]) resizes.observe(el);
   layout();
 })();

@@ -1,102 +1,23 @@
+/* The home page's own parts. The shared look (colours, fonts, spacing, base
+   styles, tab track, cards, ...) is in theme.css, linked before this file. */
+
 :root {
-  color-scheme: light dark;
-  /* Site palette (Coolors): Bright Gold, Steel Blue, Fern, Oxidized Iron, Graphite. */
-  --palette: #F9D939 #6499B9 #53783F #B02607 #333138;
   /* Mosaic tile colors (read by mosaic.js). */
   /*--mosaic-palette: #48B1D4 #4D9065 #F6E84A #E79609 #C44E29; */
   --mosaic-palette: #F9D939 #75a9c8 #569a31 #d4320e #e2861c;
   /* Border around each mosaic tile (read by mosaic.js). */
   --mosaic-border: #333138;
-
-  /* The palette has no light colour, so the light backgrounds are Graphite tints. */
-  --bg: #E7E6E7; /* 12% Graphite on white */
-  --surface: #F7F7F7; /* 4% Graphite on white */
-  /* The panels and tab bars over the DNA background: --surface, 35% transparent. */
-  --box: color-mix(in srgb, var(--surface) 65%, transparent);
-  --border: rgb(51 49 56 / 0.45); /* #333138 */
-  /* Border around the panels and tab bars. */
-  --section-border: 2px solid var(--border);
-  --text: #333138;
-  /* 75% Graphite on white. */
-  --muted: #66646A;
-  /* Links, focus rings and hovered cards: Oxidized Iron. */
-  --link: #B02607;
-  /* Fills only (selected tab): too light for text on light backgrounds. */
-  --accent: #F9D939;
-  --on-accent: #333138;
-  --dna: rgb(100 153 185 / 0.35); /* #6499B9 */
-
-  /* Spacing between the panels and the window edges. */
-  --gap: clamp(1.25rem, 2vw, 1.75rem);
-  /* Padding inside the panels. */
-  --pad: clamp(1.25rem, 2.5vw, 1.75rem);
-  --radius: 8px;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #333138;
-    --surface: #3D3B42; /* #333138 lifted 5% toward white */
-    --border: rgb(247 247 247 / 0.14);
-    --text: #E7E6E7;
-    --muted: #ADADAF;
-    --link: #F9D939;
-    --dna: rgb(100 153 185 / 0.16);
-  }
-}
-
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-
-html {
-  -webkit-text-size-adjust: 100%;
-  text-size-adjust: 100%;
 }
 
 body {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
-  min-height: 100dvh;
-  margin: 0;
-  background: var(--bg);
-  color: var(--text);
-  font: 1.0625rem/1.6 system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
-a {
-  color: var(--link);
-  text-decoration-thickness: 1px;
-  text-underline-offset: 0.2em;
-}
-
-a:hover {
-  text-decoration-thickness: 2px;
-}
-
-:focus-visible {
-  outline: 2px solid var(--link);
-  outline-offset: 3px;
-  border-radius: 2px;
-}
-
-/* DNA background: fixed to the viewport, so the page scrolls over it.
-   Filled by dna.js. */
+/* DNA background (a .ui-pattern-bg), filled by dna.js. */
 .dna-bg {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  overflow: hidden;
-  padding: 0.25rem 0.5rem;
-  color: var(--dna);
-  font: 500 0.875rem/1.6 ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  font: 500 0.875rem/1.6 var(--font-mono);
   letter-spacing: 0.3em;
-  word-break: break-all;
-  user-select: none;
-  pointer-events: none;
 }
 
 /* Panels: one column on narrow screens; on wide screens a narrow left column
@@ -119,78 +40,17 @@ a:hover {
   overflow: clip;
 }
 
+/* A tab bar: a .ui-box around a .ui-tabs track. */
+.tab-bar {
+  padding: var(--inset);
+}
+
 .tabs-side {
   grid-area: 1 / 1;
 }
 
-/* Tabs wrap onto a second row when they don't fit (e.g. four tabs on a phone). */
-.tabs {
-  --inset: 0.3rem;
-  --tab-radius: calc(var(--radius) - var(--inset));
-  position: relative;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.25rem;
-  padding: var(--inset);
-  background: var(--box);
-  border: var(--section-border);
-  border-radius: var(--radius);
-}
-
-/* Highlight behind the selected tab. tabs.js sets its position and size,
-   and turns on the slide (data-animate) once it's in place. */
-.tabs::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: var(--iw, 0);
-  height: var(--ih, 0);
-  transform: translate(var(--ix, 0), var(--iy, 0));
-  background: var(--accent);
-  border: 2px solid var(--on-accent);
-  border-radius: var(--tab-radius);
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .tabs[data-animate]::before {
-    transition: transform 0.25s ease, width 0.25s ease, height 0.25s ease;
-  }
-}
-
 .tabs-main {
   display: none;
-}
-
-.tab {
-  position: relative;
-  flex-shrink: 0;
-  margin: 0;
-  padding: 0.55rem 0.9rem;
-  background: none;
-  border: 0;
-  border-radius: var(--tab-radius);
-  color: var(--muted);
-  font: inherit;
-  font-size: 0.95rem;
-  font-weight: 600;
-  line-height: 1.4;
-  white-space: nowrap;
-  cursor: pointer;
-}
-
-.tab:hover {
-  color: var(--text);
-}
-
-.tab[aria-selected="true"] {
-  color: var(--on-accent);
-}
-
-/* No focus ring: arrow keys select the tab they move to,
-   so the highlight already marks the focused tab. */
-.tab:focus-visible {
-  outline: none;
 }
 
 /* All panels in a column share one grid cell, so the old and new panel can
@@ -198,9 +58,6 @@ a:hover {
 .panel {
   grid-area: 2 / 1;
   padding: var(--pad);
-  background: var(--box);
-  border: var(--section-border);
-  border-radius: var(--radius);
 }
 
 /* Before tabs.js runs, narrow screens show only the first panel. */
@@ -230,9 +87,6 @@ a:hover {
 .mosaic {
   position: relative;
   overflow: hidden;
-  background: none;
-  border: 0;
-  border-radius: 0;
   padding: calc(var(--tile, 28px) + var(--grout, 3px) / 2);
 }
 
@@ -260,14 +114,8 @@ a:hover {
     column-gap: var(--gap);
   }
 
-  .tabs-main { grid-area: 1 / 2; display: flex; }
+  .tabs-main { grid-area: 1 / 2; display: block; }
   .panel-main { grid-area: 2 / 2; }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .tab {
-    transition: color 0.15s ease;
-  }
 }
 
 /* Contacts */
@@ -285,19 +133,11 @@ a:hover {
   gap: 0.1rem;
 }
 
-.contact-label {
-  color: var(--muted);
-  font-size: 0.8rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
 .contacts a {
   overflow-wrap: anywhere;
 }
 
-/* Projects */
+/* Projects: a list of .ui-card cards. */
 
 .cards {
   display: grid;
@@ -305,62 +145,4 @@ a:hover {
   margin: 0;
   padding: 0;
   list-style: none;
-}
-
-.card {
-  position: relative;
-  padding: 1.25rem 1.375rem;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-}
-
-.card h3 {
-  margin: 0 0 0.3rem;
-  font-size: 1.125rem;
-  line-height: 1.3;
-}
-
-.card h3 a {
-  color: var(--text);
-  text-decoration: none;
-}
-
-/* Stretch the title link over the whole card so the card is clickable. */
-.card h3 a::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-}
-
-.card:hover {
-  border-color: var(--link);
-}
-
-.card:hover h3 a {
-  color: var(--link);
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-}
-
-.card h3 a:focus-visible {
-  outline: none;
-}
-
-.card h3 a:focus-visible::after {
-  outline: 2px solid var(--link);
-  outline-offset: 3px;
-}
-
-.card p {
-  margin: 0;
-  color: var(--muted);
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .card,
-  .card h3 a {
-    transition: border-color 0.15s ease, color 0.15s ease;
-  }
 }

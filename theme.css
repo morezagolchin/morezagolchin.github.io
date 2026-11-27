@@ -1,0 +1,376 @@
+/* Shared look for morezagolchin.github.io and every project page under it.
+
+   Link it first:  <link rel="stylesheet" href="/theme.css">
+
+   Everything here is in cascade layers, so a page's own (unlayered) CSS always
+   wins, whatever its specificity. A page can:
+   - re-tint: redefine any token in its own :root (and in its own
+     @media (prefers-color-scheme: dark) block for the dark value);
+   - restyle: write its own rules for anything below;
+   - skip the ui-* components: they only apply where a page uses the classes.
+
+   The token and class names are a contract with the project pages (see
+   README.md): values can change, but renaming or removing one breaks pages
+   that use it. */
+
+@layer theme.tokens, theme.base, theme.components;
+
+/* Tokens */
+
+@layer theme.tokens {
+  :root {
+    color-scheme: light dark;
+
+    /* Palette (Coolors): Bright Gold, Steel Blue, Fern, Oxidized Iron, Graphite. */
+    --gold: #F9D939;
+    --steel: #6499B9;
+    --fern: #53783F;
+    --iron: #B02607;
+    --graphite: #333138;
+
+    /* The palette has no light colour, so the light backgrounds are Graphite tints. */
+    --bg: #E7E6E7; /* 12% Graphite on white */
+    --surface: #F7F7F7; /* 4% Graphite on white */
+    /* Boxes over a background pattern: --surface, 35% transparent. */
+    --box: color-mix(in srgb, var(--surface) 65%, transparent);
+    --border: rgb(51 49 56 / 0.45); /* Graphite */
+    /* Border around boxes (panels, tab bars, top bars). */
+    --section-border: 2px solid var(--border);
+    --text: var(--graphite);
+    /* 75% Graphite on white. */
+    --muted: #66646A;
+    /* Links, focus rings and hovered cards. */
+    --link: var(--iron);
+    /* Fills only (selected tab, primary buttons): too light for text on light backgrounds. */
+    --accent: var(--gold);
+    --on-accent: var(--graphite);
+    /* Plain buttons. */
+    --control: rgb(51 49 56 / 0.1);
+    --control-hover: rgb(51 49 56 / 0.17);
+    /* A track pressed into a box (the tab track). */
+    --well: rgb(51 49 56 / 0.07);
+    --well-shadow: inset 0 2px 3px rgb(51 49 56 / 0.22), inset 0 -1px 0 rgb(255 255 255 / 0.7);
+    /* Something raised above a track (the selected-tab tile). */
+    --raised-shadow: 0 2px 4px rgb(51 49 56 / 0.3), inset 0 1px 0 rgb(255 255 255 / 0.5);
+    /* Background pattern text (DNA letters, chess pieces, ...). */
+    --pattern: rgb(100 153 185 / 0.35); /* Steel Blue */
+
+    --font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    --text-size: 1.0625rem;
+    --leading: 1.6;
+
+    /* Spacing between boxes and the window edges. */
+    --gap: clamp(1.25rem, 2vw, 1.75rem);
+    /* Padding inside boxes. */
+    --pad: clamp(1.25rem, 2.5vw, 1.75rem);
+    --radius: 8px;
+    /* Space between a box's edge and things inset in it (like a tab track),
+       and the corners of those things, so they follow the box's corners. */
+    --inset: 0.3rem;
+    --inner-radius: calc(var(--radius) - var(--inset));
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: var(--graphite);
+      --surface: #3D3B42; /* Graphite lifted 5% toward white */
+      --border: rgb(247 247 247 / 0.14);
+      --text: #E7E6E7;
+      --muted: #ADADAF;
+      --link: var(--gold);
+      --control: rgb(247 247 247 / 0.08);
+      --control-hover: rgb(247 247 247 / 0.14);
+      --well: rgb(0 0 0 / 0.18);
+      --well-shadow: inset 0 2px 4px rgb(0 0 0 / 0.5), inset 0 -1px 0 rgb(255 255 255 / 0.07);
+      --raised-shadow: 0 2px 6px rgb(0 0 0 / 0.5), inset 0 1px 0 rgb(255 255 255 / 0.5);
+      --pattern: rgb(100 153 185 / 0.16);
+    }
+  }
+}
+
+/* Base */
+
+@layer theme.base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  body {
+    min-height: 100vh;
+    min-height: 100dvh;
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: var(--text-size) / var(--leading) var(--font);
+  }
+
+  a {
+    color: var(--link);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+  }
+
+  a:hover {
+    text-decoration-thickness: 2px;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--link);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+}
+
+/* Components: each one only applies where a page uses its class. */
+
+@layer theme.components {
+  /* A box: panels, tab bars, top bars. */
+  .ui-box {
+    background: var(--box);
+    border: var(--section-border);
+    border-radius: var(--radius);
+  }
+
+  /* Tab track: items side by side in one track pressed into its box, and a
+     yellow tile over the selected one: [aria-selected="true"] (tabs),
+     [aria-pressed="true"] (toggle buttons) or [aria-current="page"] (links).
+     With /ui-tabs.js the tile (::before) slides between items; without it,
+     the selected item is filled instead. Wraps when the items don't fit;
+     aria-orientation="vertical" stacks them. Put it in a .ui-box with
+     padding: var(--inset) to match the home page. */
+  .ui-tabs {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    width: fit-content;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    background: var(--well);
+    border-radius: var(--inner-radius);
+    box-shadow: var(--well-shadow);
+  }
+
+  .ui-tabs[aria-orientation="vertical"] {
+    flex-direction: column;
+    flex-wrap: nowrap;
+    width: auto;
+  }
+
+  .ui-tabs::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: var(--iw, 0);
+    height: var(--ih, 0);
+    transform: translate(var(--ix, 0), var(--iy, 0));
+    background: var(--accent);
+    border: 2px solid var(--on-accent);
+    border-radius: var(--inner-radius);
+    box-shadow: var(--raised-shadow);
+  }
+
+  .ui-tabs:not([data-ready])::before,
+  .ui-tabs[data-empty]::before {
+    display: none;
+  }
+
+  /* Positioned (but no z-index), so items paint over the tile. */
+  .ui-tab {
+    position: relative;
+    flex-shrink: 0;
+    margin: 0;
+    padding: 0.55rem 0.9rem;
+    background: none;
+    border: 0;
+    border-radius: var(--inner-radius);
+    color: var(--muted);
+    font: inherit;
+    font-size: 0.95rem;
+    font-weight: 600;
+    line-height: 1.4;
+    text-align: start;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+
+  .ui-tab:hover {
+    color: var(--text);
+  }
+
+  .ui-tab:is([aria-selected="true"], [aria-pressed="true"], [aria-current="page"]) {
+    color: var(--on-accent);
+  }
+
+  /* Without the script: fill the selected item itself. */
+  .ui-tabs:not([data-ready]) > .ui-tab:is([aria-selected="true"], [aria-pressed="true"], [aria-current="page"]) {
+    background: var(--accent);
+    box-shadow: inset 0 0 0 2px var(--on-accent), var(--raised-shadow);
+  }
+
+  /* No focus ring in a tab list: arrow keys select the tab they move to,
+     so the tile already marks the focused tab. */
+  .ui-tabs[role="tablist"] > .ui-tab:focus-visible {
+    outline: none;
+  }
+
+  .ui-tab:focus-visible {
+    outline-offset: -2px;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .ui-tabs[data-animate]::before {
+      transition: transform 0.25s ease, width 0.25s ease, height 0.25s ease;
+    }
+
+    .ui-tab {
+      transition: color 0.15s ease;
+    }
+  }
+
+  /* Small uppercase label above a value or a group. */
+  .ui-label {
+    color: var(--muted);
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  /* Buttons: plain, .primary (yellow) and .link (looks like a link). */
+  .ui-button {
+    margin: 0;
+    padding: 0.45rem 0.85rem;
+    background: var(--control);
+    border: 0;
+    border-radius: var(--inner-radius);
+    color: var(--text);
+    font: inherit;
+    font-size: 0.95rem;
+    font-weight: 600;
+    line-height: 1.4;
+    cursor: pointer;
+  }
+
+  .ui-button:hover {
+    background: var(--control-hover);
+  }
+
+  .ui-button:focus-visible {
+    outline-offset: 1px;
+  }
+
+  .ui-button.primary {
+    background: var(--accent);
+    color: var(--on-accent);
+  }
+
+  .ui-button.primary:hover {
+    background: color-mix(in srgb, var(--accent) 88%, var(--text));
+  }
+
+  .ui-button.link {
+    padding: 0;
+    background: none;
+    color: var(--muted);
+    font-weight: 400;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+  }
+
+  .ui-button.link:hover {
+    color: var(--text);
+    text-decoration-thickness: 2px;
+  }
+
+  .ui-button:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+
+  /* A card with a title link (h2/h3 > a) stretched over it, so the whole card
+     is clickable. */
+  .ui-card {
+    position: relative;
+    padding: 1.25rem 1.375rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+  }
+
+  .ui-card :is(h2, h3) {
+    margin: 0 0 0.3rem;
+    font-size: 1.125rem;
+    line-height: 1.3;
+  }
+
+  .ui-card :is(h2, h3) a {
+    color: var(--text);
+    text-decoration: none;
+  }
+
+  .ui-card :is(h2, h3) a::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+  }
+
+  .ui-card:hover {
+    border-color: var(--link);
+  }
+
+  .ui-card:hover :is(h2, h3) a {
+    color: var(--link);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+  }
+
+  .ui-card :is(h2, h3) a:focus-visible {
+    outline: none;
+  }
+
+  .ui-card :is(h2, h3) a:focus-visible::after {
+    outline: 2px solid var(--link);
+    outline-offset: 3px;
+  }
+
+  .ui-card p {
+    margin: 0;
+    color: var(--muted);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .ui-card,
+    .ui-card :is(h2, h3) a {
+      transition: border-color 0.15s ease, color 0.15s ease;
+    }
+  }
+
+  /* Background pattern of text (DNA letters, chess pieces, ...), fixed to the
+     window so the page scrolls over it. The page fills it and sets its font;
+     put the page's content above it (position: relative; z-index: 1). */
+  .ui-pattern-bg {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    padding: 0.25rem 0.5rem;
+    color: var(--pattern);
+    word-break: break-all;
+    user-select: none;
+    pointer-events: none;
+  }
+}
