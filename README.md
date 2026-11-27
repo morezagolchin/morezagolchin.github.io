@@ -6,6 +6,7 @@ My personal site. Project pages live under it at `morezagolchin.github.io/<proje
 
 - `theme.css`: the shared look, used by this page and every project page.
 - `ui-tabs.js`: slides the yellow tile of the `.ui-tabs` tab track (shared too).
+- `site-footer.js`: the footer line on every page (shared too).
 - `style.css`, `tabs.js`, `dna.js`, `mosaic.js`: this page's own parts.
 
 ## Shared theme
@@ -15,7 +16,16 @@ A project page links it first, before its own styles:
 ```html
 <link rel="stylesheet" href="/theme.css">
 <script src="/ui-tabs.js" defer></script> <!-- only if the page uses .ui-tabs -->
+<script src="/site-footer.js" defer></script>
 ```
+
+and ends its `<body>` with the footer:
+
+```html
+<site-footer source="https://github.com/morezagolchin/<repo>" ai></site-footer>
+```
+
+`source` links to the page's code; `ai` adds "Code written by AI (Claude)" (leave it off on pages whose code you wrote). The name and year are set in `site-footer.js`.
 
 `theme.css` gives every page the colours (light and dark), base text styles, and spacing and corners. Its components are optional: they only apply where a page uses their classes.
 
@@ -53,13 +63,15 @@ Values can change, but **renaming or removing any name below breaks the project 
 | `.ui-button` (`.primary`, `.link`) | Buttons. |
 | `.ui-card` | Card whose title link (`h2 a` / `h3 a`) makes the whole card clickable. |
 | `.ui-pattern-bg` | Fixed background of pattern text (the page fills it and sets its font). |
+| `<site-footer>` | The footer line, filled by `/site-footer.js` (attributes `source` and `ai`). |
 
 ### New project checklist
 
 - [ ] Link `/theme.css` before the page's own CSS (and `/ui-tabs.js` if it uses `.ui-tabs`).
+- [ ] Add `/site-footer.js` and a `<site-footer>` at the end of the body (with `ai` if AI wrote the code).
 - [ ] Use the tokens (`var(--text)`, `var(--surface)`, …) instead of fixed colours; add page-only tokens for anything the theme doesn't cover.
 - [ ] Match the `theme-color` metas: `#E7E6E7` (light) and `#333138` (dark).
 - [ ] Check the page in light and dark mode.
 - [ ] Add a card for it under Playground or Projects in `index.html`.
 
-For a Vite project, add `vite-ignore` to the `<link>` and `<script>` tags so the build leaves them for the browser, and proxy `/theme.css` and `/ui-tabs.js` to `https://morezagolchin.github.io` in `vite.config.ts` for the dev server.
+For a Vite project, add `vite-ignore` to the `<link>` and `<script>` tags so the build leaves them for the browser, and proxy `/theme.css`, `/ui-tabs.js` and `/site-footer.js` to `https://morezagolchin.github.io` in `vite.config.ts` for the dev server.

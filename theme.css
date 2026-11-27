@@ -371,6 +371,56 @@
     }
   }
 
+  /* The site's footer line: <site-footer>, filled by /site-footer.js. Small,
+     centred, on a see-through backing so it reads over a background pattern.
+     Its parts stack, without the dots, when they don't fit on one line. */
+  site-footer {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0 0.5rem;
+    width: fit-content;
+    max-width: calc(100% - 2 * var(--gap));
+    margin: 0 auto calc(var(--gap) / 2);
+    padding: 0.15rem 0.75rem;
+    background: var(--box);
+    border-radius: var(--inner-radius);
+    color: var(--muted);
+    font-size: 0.8rem;
+    line-height: 1.5;
+    text-align: center;
+  }
+
+  /* Before the script fills it. */
+  site-footer:empty {
+    display: none;
+  }
+
+  site-footer > * + *::before {
+    content: "·";
+    margin-right: 0.5rem;
+  }
+
+  site-footer a {
+    color: inherit;
+  }
+
+  site-footer a:hover {
+    color: var(--text);
+  }
+
+  @media not all and (min-width: 36rem) {
+    site-footer {
+      flex-direction: column;
+    }
+
+    site-footer > * + *::before {
+      content: none;
+    }
+  }
+
   /* Background pattern of text (DNA letters, chess pieces, ...), fixed to the
      window so the page scrolls over it. The page fills it and sets its font;
      put the page's content above it (position: relative; z-index: 1). */

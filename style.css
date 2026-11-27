@@ -118,6 +118,12 @@ body {
   .panel-main { grid-area: 2 / 2; }
 }
 
+/* The footer (from theme.css) pulls up into the panels' bottom padding, so it
+   sits half a --gap below them. */
+site-footer {
+  margin-top: calc(var(--gap) / -2);
+}
+
 /* Contacts */
 
 .contacts {
