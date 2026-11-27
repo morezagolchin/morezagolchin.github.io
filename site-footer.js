@@ -27,8 +27,18 @@
       parts.push(link);
     }
 
+    // A dot between the parts, as its own element so it isn't part of the link.
+    const line = parts.flatMap((part, i) => {
+      if (i === 0) return [part];
+      const dot = document.createElement("span");
+      dot.className = "site-footer-dot";
+      dot.setAttribute("aria-hidden", "true");
+      dot.textContent = "·";
+      return [dot, part];
+    });
+
     // A custom element isn't a <footer>, so give it the footer's role.
     footer.setAttribute("role", "contentinfo");
-    footer.replaceChildren(...parts);
+    footer.replaceChildren(...line);
   }
 })();

@@ -398,11 +398,6 @@
     display: none;
   }
 
-  site-footer > * + *::before {
-    content: "·";
-    margin-right: 0.5rem;
-  }
-
   site-footer a {
     color: inherit;
   }
@@ -416,8 +411,8 @@
       flex-direction: column;
     }
 
-    site-footer > * + *::before {
-      content: none;
+    .site-footer-dot {
+      display: none;
     }
   }
 

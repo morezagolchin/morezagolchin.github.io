@@ -63,7 +63,7 @@ Values can change, but **renaming or removing any name below breaks the project 
 | `.ui-button` (`.primary`, `.link`) | Buttons. |
 | `.ui-card` | Card whose title link (`h2 a` / `h3 a`) makes the whole card clickable. |
 | `.ui-pattern-bg` | Fixed background of pattern text (the page fills it and sets its font). |
-| `<site-footer>` | The footer line, filled by `/site-footer.js` (attributes `source` and `ai`). |
+| `<site-footer>` | The footer line, filled by `/site-footer.js` (attributes `source` and `ai`). Its dots are `.site-footer-dot`. |
 
 ### New project checklist
 
