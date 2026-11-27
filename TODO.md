@@ -15,8 +15,8 @@
 Pages under morezagolchin.github.io/<project>/ share this site's look through `/theme.css` (see README).
 - [x] Split style.css: `theme.css` for the shared look (tokens, base styles, optional `ui-*` components); `style.css` keeps only the home page's own parts.
 - [x] List the theme's names in the README, with a checklist for new projects.
-- [ ] Move Arcazooly onto the theme.
-- [ ] Move chessooly onto the theme.
+- [x] Move Arcazooly onto the theme.
+- [x] Move chessooly onto the theme.
 
 ## Checks
 - [ ] Contrast: check the text stays readable over the DNA background and see-through boxes, in light and dark mode.

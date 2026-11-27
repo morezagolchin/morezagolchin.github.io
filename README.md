@@ -39,7 +39,7 @@ Values can change, but **renaming or removing any name below breaks the project 
 | --- | --- |
 | Palette | `--gold` `--steel` `--fern` `--iron` `--graphite` |
 | Colours (light and dark) | `--bg` `--surface` `--box` `--border` `--text` `--muted` `--link` `--accent` `--on-accent` `--control` `--control-hover` `--well` `--pattern` |
-| Borders and shadows | `--section-border` `--well-shadow` `--raised-shadow` |
+| Borders and shadows | `--border-width` `--section-border` `--well-shadow` `--raised-shadow` |
 | Type | `--font` `--font-mono` `--text-size` `--leading` |
 | Spacing and corners | `--gap` `--pad` `--radius` `--inset` `--inner-radius` |
 
@@ -48,7 +48,7 @@ Values can change, but **renaming or removing any name below breaks the project 
 | Class | What it is |
 | --- | --- |
 | `.ui-box` | Panel / bar box: see-through surface, border, rounded corners. |
-| `.ui-tabs` + `.ui-tab` | Tab track with a sliding yellow tile over the item with `aria-selected="true"`, `aria-pressed="true"` or `aria-current="page"`. Needs `/ui-tabs.js` to slide (without it the selected item is filled). `aria-orientation="vertical"` stacks the items. Put it in a `.ui-box` with `padding: var(--inset)`. |
+| `.ui-tabs` + `.ui-tab` | Tab track with a sliding yellow tile over the item with `aria-selected="true"`, `aria-pressed="true"` or `aria-current="page"`. Needs `/ui-tabs.js` to slide (without it the selected item is filled). `.ui-tabs-vertical` (or `aria-orientation="vertical"` on a tablist) stacks the items. Put it in a `.ui-box` with `padding: var(--inset)`. |
 | `.ui-label` | Small uppercase label. |
 | `.ui-button` (`.primary`, `.link`) | Buttons. |
 | `.ui-card` | Card whose title link (`h2 a` / `h3 a`) makes the whole card clickable. |

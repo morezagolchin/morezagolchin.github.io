@@ -34,8 +34,10 @@
     /* Boxes over a background pattern: --surface, 35% transparent. */
     --box: color-mix(in srgb, var(--surface) 65%, transparent);
     --border: rgb(51 49 56 / 0.45); /* Graphite */
-    /* Border around boxes (panels, tab bars, top bars). */
-    --section-border: 2px solid var(--border);
+    /* Border around boxes (panels, tab bars, top bars). The width is separate
+       so things framed by a box (like a game board) can fit inside it. */
+    --border-width: 2px;
+    --section-border: var(--border-width) solid var(--border);
     --text: var(--graphite);
     /* 75% Graphite on white. */
     --muted: #66646A;
@@ -144,8 +146,9 @@
      [aria-pressed="true"] (toggle buttons) or [aria-current="page"] (links).
      With /ui-tabs.js the tile (::before) slides between items; without it,
      the selected item is filled instead. Wraps when the items don't fit;
-     aria-orientation="vertical" stacks them. Put it in a .ui-box with
-     padding: var(--inset) to match the home page. */
+     .ui-tabs-vertical (or aria-orientation="vertical" on a tablist) stacks
+     them. Put it in a .ui-box with padding: var(--inset) to match the home
+     page. */
   .ui-tabs {
     position: relative;
     display: flex;
@@ -160,7 +163,7 @@
     box-shadow: var(--well-shadow);
   }
 
-  .ui-tabs[aria-orientation="vertical"] {
+  .ui-tabs:is(.ui-tabs-vertical, [aria-orientation="vertical"]) {
     flex-direction: column;
     flex-wrap: nowrap;
     width: auto;
@@ -241,6 +244,7 @@
 
   /* Small uppercase label above a value or a group. */
   .ui-label {
+    margin: 0;
     color: var(--muted);
     font-size: 0.8rem;
     font-weight: 600;
@@ -298,6 +302,14 @@
   .ui-button:disabled {
     opacity: 0.55;
     cursor: not-allowed;
+  }
+
+  .ui-button:disabled:hover {
+    background: var(--control);
+  }
+
+  .ui-button.primary:disabled:hover {
+    background: var(--accent);
   }
 
   /* A card with a title link (h2/h3 > a) stretched over it, so the whole card
